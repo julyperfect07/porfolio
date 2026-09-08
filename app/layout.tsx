@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import { Manrope, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -24,7 +26,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`dark ${manrope.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body id="top" className="min-h-full flex flex-col">
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
