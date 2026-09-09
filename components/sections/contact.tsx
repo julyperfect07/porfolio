@@ -50,7 +50,12 @@ export default function Contact() {
                 return (
                   <li key={kind}>
                     {href ? (
-                      <a href={href} className={`${cardClass} transition-[border-color,background-color,transform] duration-300 hover:border-primary/40 hover:bg-accent motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none`}>
+                      <a
+                        href={href}
+                        target={kind === "email" ? undefined : "_blank"}
+                        rel={kind === "email" ? undefined : "noreferrer"}
+                        className={`${cardClass} transition-[border-color,background-color,transform] duration-300 hover:border-primary/40 hover:bg-accent motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none`}
+                      >
                         {content}
                       </a>
                     ) : (
@@ -60,7 +65,6 @@ export default function Contact() {
                 );
               })}
             </ul>
-            <p className="mt-4 text-xs text-muted-foreground">Contact links will be added soon.</p>
           </Reveal>
         </div>
       </div>

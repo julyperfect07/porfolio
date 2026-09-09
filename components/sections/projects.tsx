@@ -1,6 +1,7 @@
 "use client";
 
-import { ImageIcon, MoveHorizontal } from "lucide-react";
+import { ExternalLink, ImageIcon, MoveHorizontal } from "lucide-react";
+import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Reveal from "@/components/reveal";
@@ -39,18 +40,54 @@ export default function Projects() {
                     <span className="ml-auto font-mono text-[10px] text-muted-foreground">PREVIEW / {project.id}</span>
                   </div>
                 <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-background">
-                  <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--accent),transparent_75%)] opacity-60 transition-opacity duration-700 group-hover:opacity-100 motion-reduce:transition-none" />
-                  <div className="relative flex flex-col items-center gap-3 text-muted-foreground">
-                    <ImageIcon aria-hidden="true" className="size-7 stroke-1" />
-                    <span className="text-sm">Screenshot coming soon</span>
-                  </div>
+                  {project.image ? (
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} application interface`}
+                      fill
+                      sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, 90vw"
+                      className="object-cover object-center transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.025] motion-reduce:transition-none"
+                    />
+                  ) : (
+                    <>
+                      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--accent),transparent_75%)] opacity-60 transition-opacity duration-700 group-hover:opacity-100 motion-reduce:transition-none" />
+                      <div className="relative flex flex-col items-center gap-3 text-muted-foreground">
+                        <ImageIcon aria-hidden="true" className="size-7 stroke-1" />
+                        <span className="text-sm">Screenshot coming soon</span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 </div>
                 </div>
                 <div className="p-6 sm:p-7">
-                  <p className="mb-3 font-mono text-xs tracking-wide text-primary">PLACEHOLDER</p>
-                  <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{project.title}</h3>
+                  <p className="mb-3 font-mono text-xs tracking-wide text-primary">
+                    {project.category}
+                  </p>
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{project.title}</h3>
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`Open ${project.title} live site`}
+                        className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                      >
+                        <ExternalLink aria-hidden="true" className="size-4" />
+                      </a>
+                    )}
+                  </div>
                   <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">{project.description}</p>
+                  {project.technologies.length > 0 && (
+                    <ul aria-label="Technologies used" className="mt-5 flex flex-wrap gap-2">
+                      {project.technologies.map((technology) => (
+                        <li key={technology} className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[11px] text-muted-foreground">
+                          {technology}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </article>
             </CarouselItem>
