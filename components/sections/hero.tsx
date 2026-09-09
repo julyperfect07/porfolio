@@ -18,22 +18,22 @@ export default function Hero() {
       <motion.div
         className="responsive-hero mx-auto flex w-full max-w-5xl flex-col px-6 sm:px-10"
         initial={false}
-        animate={{ opacity: [0, 1], y: [16, 0] }}
-        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ opacity: [0, 1], x: [-24, 0] }}
+        transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.p initial={false} animate={{ opacity: [0, 1], y: [12, 0] }} transition={{ duration: 0.9 }} className="text-base font-medium text-primary sm:text-lg">
+        <p className="text-base font-medium text-primary sm:text-lg">
           Hi, I’m Abdallah.
-        </motion.p>
+        </p>
         <h1
           id="hero-heading"
           className="mt-5 text-[clamp(2.75rem,13vw,4.5rem)] font-semibold leading-[1.08] tracking-tight sm:text-7xl lg:text-8xl"
         >
           Software<br />Engineer<span className="text-primary">.</span>
         </h1>
-        <motion.p initial={false} animate={{ opacity: [0, 1], y: [16, 0] }} transition={{ duration: 1, delay: 0.2 }} className="mt-7 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="mt-7 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
           I’m interested in software development. This is where I share my
           projects and what I’m learning.
-        </motion.p>
+        </p>
 
         <div className="mt-9 flex flex-wrap justify-center gap-3 sm:justify-start">
           <a

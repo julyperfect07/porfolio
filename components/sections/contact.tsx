@@ -26,7 +26,7 @@ export default function Contact() {
             </p>
             <div aria-hidden="true" className="mx-auto mt-8 h-px w-16 bg-primary/60 md:mx-0" />
           </Reveal>
-          <Reveal delay={0.18}>
+          <Reveal direction="right" delay={0.18}>
             <ul className="space-y-3">
               {contactLinks.map(({ label, kind, href }) => {
                 const { icon: Icon, color, background, description } = channels[kind];

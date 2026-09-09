@@ -72,7 +72,7 @@ export default function Technologies() {
         </Reveal>
         <div className="mt-12 grid gap-10 sm:grid-cols-2">
           {technologyGroups.map((group, index) => (
-            <Reveal key={group.title} delay={index * 0.12}>
+            <Reveal key={group.title} delay={index * 0.1}>
               <h3 className="mb-4 text-sm font-medium text-muted-foreground">
                 {group.title}
               </h3>

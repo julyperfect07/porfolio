@@ -108,7 +108,7 @@ export default function Projects() {
           <p className="mt-4 text-muted-foreground">Project details are on the way.</p>
         </Reveal>
 
-        <Reveal className="mt-10">
+        <Reveal delay={0.12} className="mt-10">
         <Carousel aria-label="Project showcase" opts={{ align: "start", duration: 40 }}>
           <div className="mb-6 flex items-center justify-between gap-3">
             <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"><MoveHorizontal aria-hidden="true" className="size-4" /> <span className="sm:hidden">Swipe</span><span className="hidden sm:inline">Swipe or use the arrows</span></p>
