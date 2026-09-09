@@ -55,7 +55,7 @@ export default function Technologies() {
       aria-labelledby="technologies-heading"
       className="scroll-mt-8 border-t border-border"
     >
-      <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
+      <div className="responsive-copy mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
         <Reveal>
           <p className="font-mono text-xs tracking-widest text-primary">
             02 / TECHNOLOGIES
@@ -76,7 +76,7 @@ export default function Technologies() {
               <h3 className="mb-4 text-sm font-medium text-muted-foreground">
                 {group.title}
               </h3>
-              <ul className="flex flex-wrap gap-3">
+              <ul className="responsive-list flex flex-wrap gap-3">
                 {group.items.map((name) => {
                   const Icon = icons[name];
                   return (

@@ -2,16 +2,14 @@
 
 import { ExternalLink, ImageIcon, MoveHorizontal } from "lucide-react";
 import Image from "next/image";
-import { useReducedMotion } from "motion/react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Reveal from "@/components/reveal";
 import { projects } from "@/data/portfolio";
 
 export default function Projects() {
-  const reduceMotion = useReducedMotion();
   return (
     <section id="projects" aria-labelledby="projects-heading" className="scroll-mt-8 border-t border-border">
-      <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
+      <div className="responsive-copy mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
         <Reveal>
           <p className="font-mono text-xs tracking-widest text-primary">03 / PROJECTS</p>
           <h2 id="projects-heading" className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -21,9 +19,9 @@ export default function Projects() {
         </Reveal>
 
         <Reveal className="mt-10">
-        <Carousel aria-label="Project showcase" opts={{ align: "start", duration: reduceMotion ? 0 : 40 }}>
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <p className="flex items-center gap-2 text-sm text-muted-foreground"><MoveHorizontal aria-hidden="true" className="size-4" /> Swipe or use the arrows</p>
+        <Carousel aria-label="Project showcase" opts={{ align: "start", duration: 40 }}>
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"><MoveHorizontal aria-hidden="true" className="size-4" /> <span className="sm:hidden">Swipe</span><span className="hidden sm:inline">Swipe or use the arrows</span></p>
             <div className="flex gap-2">
               <CarouselPrevious className="static size-11" />
               <CarouselNext className="static size-11" />
@@ -60,11 +58,11 @@ export default function Projects() {
                 </div>
                 </div>
                 </div>
-                <div className="p-6 sm:p-7">
+                <div className="responsive-copy p-6 sm:p-7">
                   <p className="mb-3 font-mono text-xs tracking-wide text-primary">
                     {project.category}
                   </p>
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="responsive-project-title relative flex items-start gap-4">
                     <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{project.title}</h3>
                     {project.liveUrl && (
                       <a
@@ -72,7 +70,7 @@ export default function Projects() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Open ${project.title} live site`}
-                        className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                        className="absolute right-0 flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:static"
                       >
                         <ExternalLink aria-hidden="true" className="size-4" />
                       </a>
@@ -80,7 +78,7 @@ export default function Projects() {
                   </div>
                   <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">{project.description}</p>
                   {project.technologies.length > 0 && (
-                    <ul aria-label="Technologies used" className="mt-5 flex flex-wrap gap-2">
+                    <ul aria-label="Technologies used" className="responsive-list mt-5 flex flex-wrap gap-2">
                       {project.technologies.map((technology) => (
                         <li key={technology} className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[11px] text-muted-foreground">
                           {technology}

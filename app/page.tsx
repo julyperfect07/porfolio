@@ -6,7 +6,7 @@ import Contact from "@/components/sections/contact";
 
 export default function Home() {
   return (
-    <main>
+    <main className="w-full max-w-[100vw] min-w-0 overflow-x-clip">
       <Hero />
       <About />
       <Technologies />

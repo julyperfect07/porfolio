@@ -14,17 +14,17 @@ export default function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-heading" className="relative isolate scroll-mt-8 border-t border-border">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_15%_65%,var(--accent),transparent_65%)] opacity-40" />
-      <div className="mx-auto max-w-5xl px-6 py-24 sm:px-10 sm:py-32">
+      <div className="responsive-copy mx-auto max-w-5xl px-6 py-24 sm:px-10 sm:py-32">
         <p className="font-mono text-xs tracking-widest text-primary">04 / CONTACT</p>
         <div className="mt-8 grid items-center gap-12 md:grid-cols-2 md:gap-16">
           <Reveal>
             <h2 id="contact-heading" className="text-5xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
               Have something<br />in mind<span className="text-primary">?</span>
             </h2>
-            <p className="mt-6 max-w-sm text-lg leading-8 text-muted-foreground">
+            <p className="mx-auto mt-6 max-w-sm text-lg leading-8 text-muted-foreground md:mx-0">
               A project, a question, or just a hello. Let’s talk.
             </p>
-            <div aria-hidden="true" className="mt-8 h-px w-16 bg-primary/60" />
+            <div aria-hidden="true" className="mx-auto mt-8 h-px w-16 bg-primary/60 md:mx-0" />
           </Reveal>
           <Reveal delay={0.18}>
             <ul className="space-y-3">

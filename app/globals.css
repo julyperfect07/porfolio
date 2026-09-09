@@ -111,3 +111,38 @@
   }
 }
 
+.responsive-copy {
+  text-align: center;
+}
+
+.responsive-hero {
+  align-items: center;
+  text-align: center;
+}
+
+.responsive-list,
+.responsive-project-title,
+.responsive-footer {
+  justify-content: center;
+}
+
+@media (min-width: 40rem) {
+  .responsive-copy,
+  .responsive-hero {
+    text-align: left;
+  }
+
+  .responsive-hero {
+    align-items: flex-start;
+  }
+
+  .responsive-list {
+    justify-content: flex-start;
+  }
+
+  .responsive-project-title,
+  .responsive-footer {
+    justify-content: space-between;
+  }
+}
+

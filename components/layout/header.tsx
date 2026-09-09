@@ -8,20 +8,20 @@ const navigation = [
 
 export default function Header() {
   return (
-    <header className="border-b border-border">
+    <header className="w-full max-w-[100vw] overflow-x-clip border-b border-border">
       <nav
         aria-label="Main navigation"
-        className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-10"
+        className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-10 sm:py-5"
       >
         <Link
           href="/"
           aria-label="Abdallah.dev home"
-          className="rounded-sm text-xl font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          className="shrink-0 rounded-sm text-lg font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:text-xl"
         >
           Abdallah<span className="text-primary">.dev</span>
         </Link>
 
-        <ul className="flex items-center gap-5 text-sm text-muted-foreground sm:gap-7">
+        <ul className="flex items-center gap-3 text-xs text-muted-foreground min-[375px]:gap-4 sm:gap-7 sm:text-sm">
           {navigation.map((item) => (
             <li key={item.href}>
               <a
