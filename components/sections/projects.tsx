@@ -1,10 +1,100 @@
 "use client";
 
-import { ExternalLink, ImageIcon, MoveHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, ImageIcon, MoveHorizontal } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { FaGithub } from "react-icons/fa6";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Reveal from "@/components/reveal";
 import { projects } from "@/data/portfolio";
+
+type Project = (typeof projects)[number];
+
+function ProjectImageGallery({ project }: { project: Project }) {
+  const [activeImage, setActiveImage] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  if (project.images.length === 0) {
+    return (
+      <>
+        <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--accent),transparent_75%)] opacity-60 transition-opacity duration-700 group-hover:opacity-100 motion-reduce:transition-none" />
+        <div className="relative flex flex-col items-center gap-3 text-muted-foreground">
+          <ImageIcon aria-hidden="true" className="size-7 stroke-1" />
+          <span className="text-sm">Screenshot coming soon</span>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={project.images[activeImage].src}
+          custom={direction}
+          variants={{
+            enter: (slideDirection: number) => ({ opacity: 0, x: slideDirection > 0 ? 48 : -48 }),
+            center: { opacity: 1, x: 0 },
+            exit: (slideDirection: number) => ({ opacity: 0, x: slideDirection > 0 ? -48 : 48 }),
+          }}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={project.images[activeImage].src}
+            alt={project.images[activeImage].alt}
+            fill
+            sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, 90vw"
+            className="object-cover object-center transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.025] motion-reduce:transition-none"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {project.images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label={`Show previous ${project.title} screenshot`}
+            disabled={activeImage === 0}
+            onPointerDown={(event) => event.stopPropagation()}
+            style={{ left: "0.75rem", top: "50%", transform: "translateY(-50%)", backgroundColor: "white", color: "black" }}
+            onClick={() => {
+              setDirection(-1);
+              setActiveImage((current) => current - 1);
+            }}
+            className="absolute z-20 flex size-10 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <ChevronLeft aria-hidden="true" className="size-5" />
+          </button>
+          <button
+            type="button"
+            aria-label={`Show next ${project.title} screenshot`}
+            disabled={activeImage === project.images.length - 1}
+            onPointerDown={(event) => event.stopPropagation()}
+            style={{ right: "0.75rem", top: "50%", transform: "translateY(-50%)", backgroundColor: "white", color: "black" }}
+            onClick={() => {
+              setDirection(1);
+              setActiveImage((current) => current + 1);
+            }}
+            className="absolute z-20 flex size-10 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <ChevronRight aria-hidden="true" className="size-5" />
+          </button>
+          <span
+            style={{ bottom: "0.75rem", left: "50%", transform: "translateX(-50%)", backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}
+            className="absolute z-10 rounded-full px-2.5 py-1 font-mono text-[10px] backdrop-blur"
+          >
+            {activeImage + 1} / {project.images.length}
+          </span>
+        </>
+      )}
+    </>
+  );
+}
 
 export default function Projects() {
   return (
@@ -36,25 +126,9 @@ export default function Projects() {
                   <div aria-hidden="true" className="flex h-8 items-center gap-1.5 border-b border-border px-3">
                     <span className="size-2 rounded-full bg-muted-foreground/40" /><span className="size-2 rounded-full bg-muted-foreground/30" /><span className="size-2 rounded-full bg-muted-foreground/20" />
                     <span className="ml-auto font-mono text-[10px] text-muted-foreground">PREVIEW / {project.id}</span>
-                  </div>
+                </div>
                 <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-background">
-                  {project.image ? (
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} application interface`}
-                      fill
-                      sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, 90vw"
-                      className="object-cover object-center transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.025] motion-reduce:transition-none"
-                    />
-                  ) : (
-                    <>
-                      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--accent),transparent_75%)] opacity-60 transition-opacity duration-700 group-hover:opacity-100 motion-reduce:transition-none" />
-                      <div className="relative flex flex-col items-center gap-3 text-muted-foreground">
-                        <ImageIcon aria-hidden="true" className="size-7 stroke-1" />
-                        <span className="text-sm">Screenshot coming soon</span>
-                      </div>
-                    </>
-                  )}
+                  <ProjectImageGallery project={project} />
                 </div>
                 </div>
                 </div>
@@ -64,17 +138,30 @@ export default function Projects() {
                   </p>
                   <div className="responsive-project-title relative flex items-start gap-4">
                     <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{project.title}</h3>
+                    <div className="absolute right-0 flex gap-2 sm:static">
+                    {project.sourceUrl && (
+                      <a
+                        href={project.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`Open ${project.title} source code`}
+                        className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                      >
+                        <FaGithub aria-hidden="true" className="size-4" />
+                      </a>
+                    )}
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Open ${project.title} live site`}
-                        className="absolute right-0 flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:static"
+                        className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
                       >
                         <ExternalLink aria-hidden="true" className="size-4" />
                       </a>
                     )}
+                    </div>
                   </div>
                   <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">{project.description}</p>
                   {project.technologies.length > 0 && (
