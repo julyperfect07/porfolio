@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, FileText } from "lucide-react";
 import { motion } from "motion/react";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -51,6 +51,17 @@ export default function Hero() {
           >
             Contact me <ArrowUpRight aria-hidden="true" />
           </a>
+          <button
+            type="button"
+            disabled
+            title="Résumé will be available soon"
+            className={buttonVariants({
+              variant: "outline",
+              className: "min-h-12 cursor-not-allowed gap-3 px-5 opacity-55",
+            })}
+          >
+            Résumé soon <FileText aria-hidden="true" />
+          </button>
         </div>
       </motion.div>
     </section>

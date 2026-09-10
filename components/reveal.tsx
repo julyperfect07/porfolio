@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 export default function Reveal({ children, className, delay = 0, direction = "left" }: {
   children: ReactNode;
@@ -9,15 +9,27 @@ export default function Reveal({ children, className, delay = 0, direction = "le
   delay?: number;
   direction?: "left" | "right";
 }) {
-  const movement = { x: [direction === "left" ? -32 : 32, 0] };
+  const prefersReducedMotion = useReducedMotion();
+  const offset = direction === "left" ? -32 : 32;
 
   return (
     <motion.div
       className={className}
-      initial={false}
-      whileInView={{ opacity: [0, 1], ...movement }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={prefersReducedMotion ? false : { opacity: 0, x: offset }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{
+        once: true,
+        amount: 0.15,
+        // Wait until content crosses well into the viewport. A low amount keeps
+        // tall mobile cards reachable while the negative margin prevents an
+        // early reveal when only the edge of a section is visible.
+        margin: "0px 0px -35% 0px",
+      }}
+      transition={{
+        duration: prefersReducedMotion ? 0 : 0.9,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       {children}
     </motion.div>
