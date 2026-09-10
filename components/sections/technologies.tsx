@@ -56,7 +56,7 @@ export default function Technologies() {
       className="scroll-mt-8 border-t border-border"
     >
       <div className="responsive-copy mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
-        <Reveal>
+        <Reveal direction="left">
           <p className="font-mono text-xs tracking-widest text-primary">
             02 / TECHNOLOGIES
           </p>
@@ -72,7 +72,11 @@ export default function Technologies() {
         </Reveal>
         <div className="mt-12 grid gap-10 sm:grid-cols-2">
           {technologyGroups.map((group, index) => (
-            <Reveal key={group.title} delay={index * 0.1}>
+            <Reveal
+              key={group.title}
+              direction={index % 2 === 0 ? "left" : "right"}
+              delay={index * 0.1}
+            >
               <h3 className="mb-4 text-sm font-medium text-muted-foreground">
                 {group.title}
               </h3>

@@ -17,7 +17,7 @@ export default function Contact() {
       <div className="responsive-copy mx-auto max-w-5xl px-6 py-24 sm:px-10 sm:py-32">
         <p className="font-mono text-xs tracking-widest text-primary">04 / CONTACT</p>
         <div className="mt-8 grid items-center gap-12 md:grid-cols-2 md:gap-16">
-          <Reveal>
+          <Reveal direction="left">
             <h2 id="contact-heading" className="text-5xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
               Have something<br />in mind<span className="text-primary">?</span>
             </h2>

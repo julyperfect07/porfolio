@@ -1,17 +1,106 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, ExternalLink, ImageIcon, MoveHorizontal } from "lucide-react";
+import type { IconType } from "react-icons";
+import {
+  Cable,
+  ChevronLeft,
+  ChevronRight,
+  Code2,
+  ExternalLink,
+  ImageIcon,
+  MessagesSquare,
+  MoveHorizontal,
+  Video,
+  Workflow,
+} from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { FaGithub } from "react-icons/fa6";
+import {
+  SiClerk,
+  SiExpress,
+  SiFramer,
+  SiLeaflet,
+  SiMongodb,
+  SiNestjs,
+  SiNextdotjs,
+  SiPostgresql,
+  SiPrisma,
+  SiReact,
+  SiReactquery,
+  SiSentry,
+  SiShadcnui,
+  SiWebrtc,
+} from "react-icons/si";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import Reveal from "@/components/reveal";
 import { projects } from "@/data/portfolio";
 
 type Project = (typeof projects)[number];
+type GalleryProject = Pick<Project, "id" | "title"> & {
+  images: ReadonlyArray<{ src: string; alt: string }>;
+};
 
-function ProjectImageGallery({ project }: { project: Project }) {
+const technologyIcons: Record<string, IconType> = {
+  "Next.js": SiNextdotjs,
+  NestJS: SiNestjs,
+  WebRTC: SiWebrtc,
+  WebSockets: Cable,
+  PeerJS: Code2,
+  "shadcn/ui": SiShadcnui,
+  Motion: SiFramer,
+  Prisma: SiPrisma,
+  PostgreSQL: SiPostgresql,
+  "TanStack Query": SiReactquery,
+  Leaflet: SiLeaflet,
+  React: SiReact,
+  Express: SiExpress,
+  MongoDB: SiMongodb,
+  Clerk: SiClerk,
+  "Stream Chat": MessagesSquare,
+  "Stream Video": Video,
+  Inngest: Workflow,
+  Sentry: SiSentry,
+};
+
+const technologyIconColors: Record<string, string> = {
+  NestJS: "#E0234E",
+  WebRTC: "#35A854",
+  WebSockets: "#7C9CBF",
+  PeerJS: "#F05A28",
+  Motion: "#BB4BFF",
+  Prisma: "#5A67D8",
+  PostgreSQL: "#4169E1",
+  "TanStack Query": "#FF4154",
+  Leaflet: "#199900",
+  React: "#61DAFB",
+  Express: "#F0F0F0",
+  MongoDB: "#47A248",
+  Clerk: "#6C47FF",
+  "Stream Chat": "#005FFF",
+  "Stream Video": "#005FFF",
+  Inngest: "#7C3AED",
+  Sentry: "#8B5CF6",
+};
+
+function TechnologyBadge({ technology }: { technology: string }) {
+  const TechnologyIcon = technologyIcons[technology] ?? Code2;
+
+  return (
+    <li className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-background px-4 py-3 font-mono text-[11px] leading-none text-muted-foreground">
+      <span className="flex size-4 shrink-0 items-center justify-center" aria-hidden="true">
+        <TechnologyIcon
+          className="block size-3.5"
+          style={{ color: technologyIconColors[technology] }}
+        />
+      </span>
+      <span className="whitespace-nowrap leading-none">{technology}</span>
+    </li>
+  );
+}
+
+function ProjectImageGallery({ project }: { project: GalleryProject }) {
   const [activeImage, setActiveImage] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -100,7 +189,7 @@ export default function Projects() {
   return (
     <section id="projects" aria-labelledby="projects-heading" className="scroll-mt-8 border-t border-border">
       <div className="responsive-copy mx-auto max-w-5xl px-6 py-20 sm:px-10 sm:py-24">
-        <Reveal>
+        <Reveal direction="left">
           <p className="font-mono text-xs tracking-widest text-primary">03 / PROJECTS</p>
           <h2 id="projects-heading" className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
             Things I’ve built.
@@ -108,7 +197,7 @@ export default function Projects() {
           <p className="mt-4 text-muted-foreground">Project details are on the way.</p>
         </Reveal>
 
-        <Reveal delay={0.12} className="mt-10">
+        <Reveal direction="right" delay={0.12} className="mt-10">
         <Carousel aria-label="Project showcase" opts={{ align: "start", duration: 40 }}>
           <div className="mb-6 flex items-center justify-between gap-3">
             <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"><MoveHorizontal aria-hidden="true" className="size-4" /> <span className="sm:hidden">Swipe</span><span className="hidden sm:inline">Swipe or use the arrows</span></p>
@@ -167,9 +256,7 @@ export default function Projects() {
                   {project.technologies.length > 0 && (
                     <ul aria-label="Technologies used" className="responsive-list mt-5 flex flex-wrap gap-2">
                       {project.technologies.map((technology) => (
-                        <li key={technology} className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[11px] text-muted-foreground">
-                          {technology}
-                        </li>
+                        <TechnologyBadge key={technology} technology={technology} />
                       ))}
                     </ul>
                   )}

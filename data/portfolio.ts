@@ -51,13 +51,16 @@ export const projects = [
   },
   {
     id: "03",
-    title: "Project three",
-    description: "Project description, my contribution, and technologies will go here.",
-    images: [],
-    technologies: [],
-    category: "PLACEHOLDER",
+    title: "Slap",
+    description:
+      "A Slack-inspired collaboration app for real-time team messaging and video calls. It includes channels, direct conversations, member management, invitations, pinned messages, and secure authentication.",
+    images: [
+      { src: "/projects/slap.png", alt: "Slap team collaboration app landing page" },
+    ],
+    technologies: ["React", "Express", "MongoDB", "Clerk", "Stream Chat", "Stream Video", "Inngest", "Sentry"],
+    category: "TEAM COLLABORATION APP",
     liveUrl: null,
-    sourceUrl: null,
-    placeholder: true,
+    sourceUrl: "https://github.com/julyperfect07/slack-clone",
+    placeholder: false,
   },
 ] as const;

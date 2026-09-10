@@ -3,15 +3,13 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 
-export default function Reveal({ children, className, delay = 0, direction = "up" }: {
+export default function Reveal({ children, className, delay = 0, direction = "left" }: {
   children: ReactNode;
   className?: string;
   delay?: number;
-  direction?: "left" | "right" | "up";
+  direction?: "left" | "right";
 }) {
-  const movement = direction === "up"
-    ? { y: [24, 0] }
-    : { x: [direction === "left" ? -24 : 24, 0] };
+  const movement = { x: [direction === "left" ? -32 : 32, 0] };
 
   return (
     <motion.div
