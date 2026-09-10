@@ -1,10 +1,12 @@
 ﻿"use client";
 
 import { ArrowDown, ArrowUpRight, FileText } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <section
       aria-labelledby="hero-heading"
@@ -17,9 +19,12 @@ export default function Hero() {
 
       <motion.div
         className="responsive-hero mx-auto flex w-full max-w-5xl flex-col px-6 sm:px-10"
-        initial={false}
-        animate={{ opacity: [0, 1], x: [-24, 0] }}
-        transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+        initial={prefersReducedMotion ? false : { opacity: 0, x: -32 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: prefersReducedMotion ? 0 : 0.95,
+          ease: [0.22, 1, 0.36, 1],
+        }}
       >
         <p className="text-base font-medium text-primary sm:text-lg">
           Hi, I’m Abdallah.

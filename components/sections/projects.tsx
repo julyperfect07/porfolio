@@ -291,7 +291,10 @@ export default function Projects() {
                             PREVIEW / {project.id}
                           </span>
                         </div>
-                        <div className="relative flex aspect-16/10 items-center justify-center overflow-hidden bg-background">
+                        <div
+                          className="relative flex min-h-40 items-center justify-center overflow-hidden bg-background"
+                          style={{ aspectRatio: "16 / 10" }}
+                        >
                           <ProjectImageGallery project={project} />
                         </div>
                       </div>
