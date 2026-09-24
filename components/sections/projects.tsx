@@ -14,8 +14,8 @@ import {
   Workflow,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useState, useSyncExternalStore } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { FaGithub } from "react-icons/fa6";
 import {
   SiClerk,
@@ -110,7 +110,8 @@ function TechnologyBadge({ technology }: { technology: string }) {
   );
 }
 
-function ProjectImageGallery({ project }: { project: GalleryProject }) {
+function ProjectImageGallery({ project, animated = false }: { project: GalleryProject; animated?: boolean }) {
+  const reducedMotion = useReducedMotion();
   const [activeImage, setActiveImage] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -131,36 +132,46 @@ function ProjectImageGallery({ project }: { project: GalleryProject }) {
 
   return (
     <>
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.div
-          key={project.images[activeImage].src}
-          custom={direction}
-          variants={{
-            enter: (slideDirection: number) => ({
-              opacity: 0,
-              x: slideDirection > 0 ? 48 : -48,
-            }),
-            center: { opacity: 1, x: 0 },
-            exit: (slideDirection: number) => ({
-              opacity: 0,
-              x: slideDirection > 0 ? -48 : 48,
-            }),
-          }}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={project.images[activeImage].src}
-            alt={project.images[activeImage].alt}
-            fill
-            sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, 90vw"
-            className="object-cover object-center transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.025] motion-reduce:transition-none"
-          />
-        </motion.div>
-      </AnimatePresence>
+      {!animated || reducedMotion ? (
+        <Image
+          src={project.images[activeImage].src}
+          alt={project.images[activeImage].alt}
+          fill
+          sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, (min-width: 640px) calc(100vw - 120px), calc(100vw - 88px)"
+          className="object-cover object-center"
+        />
+      ) : (
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={project.images[activeImage].src}
+            custom={direction}
+            variants={{
+              enter: (slideDirection: number) => ({
+                opacity: 0,
+                x: slideDirection > 0 ? 48 : -48,
+              }),
+              center: { opacity: 1, x: 0 },
+              exit: (slideDirection: number) => ({
+                opacity: 0,
+                x: slideDirection > 0 ? -48 : 48,
+              }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={project.images[activeImage].src}
+              alt={project.images[activeImage].alt}
+              fill
+              sizes="(min-width: 1024px) 576px, (min-width: 768px) 70vw, 90vw"
+              className="object-cover object-center transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.025] motion-reduce:transition-none"
+            />
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {project.images.length > 1 && (
         <>
@@ -180,7 +191,7 @@ function ProjectImageGallery({ project }: { project: GalleryProject }) {
               setDirection(-1);
               setActiveImage((current) => current - 1);
             }}
-            className="absolute z-20 flex size-10 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="absolute z-20 flex size-11 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <ChevronLeft aria-hidden="true" className="size-5" />
           </button>
@@ -200,7 +211,7 @@ function ProjectImageGallery({ project }: { project: GalleryProject }) {
               setDirection(1);
               setActiveImage((current) => current + 1);
             }}
-            className="absolute z-20 flex size-10 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="absolute z-20 flex size-11 items-center justify-center rounded-full border border-black/15 shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <ChevronRight aria-hidden="true" className="size-5" />
           </button>
@@ -212,7 +223,7 @@ function ProjectImageGallery({ project }: { project: GalleryProject }) {
               backgroundColor: "rgba(0, 0, 0, 0.7)",
               color: "white",
             }}
-            className="absolute z-10 rounded-full px-2.5 py-1 font-mono text-[10px] backdrop-blur"
+            className="absolute z-10 rounded-full px-2.5 py-1 font-mono text-[10px]"
           >
             {activeImage + 1} / {project.images.length}
           </span>
@@ -222,7 +233,113 @@ function ProjectImageGallery({ project }: { project: GalleryProject }) {
   );
 }
 
+// Hydrate with the lightweight layout; mount pointer effects only for wide,
+// hover-capable devices. Mobile never mounts a hidden desktop carousel.
+const enhancedQuery = "(min-width: 768px) and (hover: hover) and (pointer: fine)";
+function subscribeToLayout(onChange: () => void) {
+  const query = window.matchMedia(enhancedQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+function getEnhancedLayout() {
+  return window.matchMedia(enhancedQuery).matches;
+}
+function getServerLayout() {
+  return false;
+}
+
+function ProjectCard({ project, enhanced = false }: { project: Project; enhanced?: boolean }) {
+  return (
+    <article className="group relative h-full overflow-hidden rounded-xl border border-border bg-card md:transition-[border-color,box-shadow] duration-500 hover:border-primary/60 md:hover:shadow-[0_0_32px_color-mix(in_srgb,var(--primary)_16%,transparent)] motion-reduce:transition-none">
+      {enhanced && (
+        <GlowingEffect
+          disabled={false}
+          proximity={96}
+          spread={42}
+          borderWidth={2}
+          movementDuration={1.2}
+        />
+      )}
+      <div className="border-b border-border bg-background p-5 sm:p-8">
+        <div className="overflow-hidden rounded-lg border border-border bg-card md:shadow-xl">
+          <div
+            aria-hidden="true"
+            className="flex h-8 items-center gap-1.5 border-b border-border px-3"
+          >
+            <span className="size-2 rounded-full bg-muted-foreground/40" />
+            <span className="size-2 rounded-full bg-muted-foreground/30" />
+            <span className="size-2 rounded-full bg-muted-foreground/20" />
+            <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+              PREVIEW / {project.id}
+            </span>
+          </div>
+          <div
+            className="relative flex min-h-40 items-center justify-center overflow-hidden bg-background"
+            style={{ aspectRatio: "16 / 10" }}
+          >
+            <ProjectImageGallery project={project} animated={enhanced} />
+          </div>
+        </div>
+      </div>
+      <div className="responsive-copy p-6 sm:p-7">
+        <p className="mb-3 font-mono text-xs tracking-wide text-primary">
+          {project.category}
+        </p>
+        <div className="responsive-project-title relative flex flex-wrap items-center gap-3">
+          <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            {project.title}
+          </h3>
+          <div className="flex shrink-0 gap-2">
+            {project.sourceUrl && (
+              <a
+                href={project.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open ${project.title} source code`}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              >
+                <FaGithub aria-hidden="true" className="size-4" />
+              </a>
+            )}
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open ${project.title} live site`}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              >
+                <ExternalLink
+                  aria-hidden="true"
+                  className="size-4"
+                />
+              </a>
+            )}
+          </div>
+        </div>
+        <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
+          {project.description}
+        </p>
+        {project.technologies.length > 0 && (
+          <ul
+            aria-label="Technologies used"
+            className="responsive-list mt-5 flex flex-wrap gap-2"
+          >
+            {project.technologies.map((technology) => (
+              <TechnologyBadge
+                key={technology}
+                technology={technology}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export default function Projects() {
+  const enhanced = useSyncExternalStore(subscribeToLayout, getEnhancedLayout, getServerLayout);
   return (
     <section
       id="projects"
@@ -245,119 +362,45 @@ export default function Projects() {
           </p>
         </Reveal>
 
-        <Reveal direction="right" delay={0.12} className="mt-10">
-          <Carousel
-            aria-label="Project showcase"
-            opts={{ align: "start", duration: 40 }}
-          >
-            <div className="mb-6 flex items-center justify-between gap-3">
-              <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
-                <MoveHorizontal aria-hidden="true" className="size-4" />{" "}
-                <span className="sm:hidden">Swipe</span>
-                <span className="hidden sm:inline">
-                  Swipe or use the arrows
-                </span>
-              </p>
-              <div className="flex gap-2">
-                <CarouselPrevious className="static size-11" />
-                <CarouselNext className="static size-11" />
+        {!enhanced ? (
+          <div className="mt-10 grid gap-6" aria-label="Project showcase">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        ) : (
+          <Reveal direction="right" delay={0.12} className="mt-10">
+            <Carousel
+              aria-label="Project showcase"
+              opts={{ align: "start", duration: 40 }}
+            >
+              <div className="mb-6 flex items-center justify-between gap-3">
+                <p className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
+                  <MoveHorizontal aria-hidden="true" className="size-4" />{" "}
+                  <span className="sm:hidden">Swipe</span>
+                  <span className="hidden sm:inline">
+                    Swipe or use the arrows
+                  </span>
+                </p>
+                <div className="flex gap-2">
+                  <CarouselPrevious className="static size-11" />
+                  <CarouselNext className="static size-11" />
+                </div>
               </div>
-            </div>
-            <CarouselContent className="-ml-6">
-              {projects.map((project, index) => (
-                <CarouselItem
-                  key={project.id}
-                  aria-label={`${index + 1} of ${projects.length}: ${project.title}`}
-                  className="basis-[90%] pl-6 md:basis-[70%] lg:basis-[60%]"
-                >
-                  <article className="group relative h-full overflow-hidden rounded-xl border border-border bg-card transition-[border-color,box-shadow] duration-500 hover:border-primary/60 hover:shadow-[0_0_32px_color-mix(in_srgb,var(--primary)_16%,transparent)] motion-reduce:transition-none">
-                    <GlowingEffect
-                      disabled={false}
-                      proximity={96}
-                      spread={42}
-                      borderWidth={2}
-                      movementDuration={1.2}
-                    />
-                    <div className="border-b border-border bg-background p-5 sm:p-8">
-                      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-                        <div
-                          aria-hidden="true"
-                          className="flex h-8 items-center gap-1.5 border-b border-border px-3"
-                        >
-                          <span className="size-2 rounded-full bg-muted-foreground/40" />
-                          <span className="size-2 rounded-full bg-muted-foreground/30" />
-                          <span className="size-2 rounded-full bg-muted-foreground/20" />
-                          <span className="ml-auto font-mono text-[10px] text-muted-foreground">
-                            PREVIEW / {project.id}
-                          </span>
-                        </div>
-                        <div
-                          className="relative flex min-h-40 items-center justify-center overflow-hidden bg-background"
-                          style={{ aspectRatio: "16 / 10" }}
-                        >
-                          <ProjectImageGallery project={project} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="responsive-copy p-6 sm:p-7">
-                      <p className="mb-3 font-mono text-xs tracking-wide text-primary">
-                        {project.category}
-                      </p>
-                      <div className="responsive-project-title relative flex items-start gap-4">
-                        <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
-                          {project.title}
-                        </h3>
-                        <div className="absolute right-0 flex gap-2 sm:static">
-                          {project.sourceUrl && (
-                            <a
-                              href={project.sourceUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              aria-label={`Open ${project.title} source code`}
-                              className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-                            >
-                              <FaGithub aria-hidden="true" className="size-4" />
-                            </a>
-                          )}
-                          {project.liveUrl && (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              aria-label={`Open ${project.title} live site`}
-                              className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-[color,border-color,transform] duration-300 hover:border-primary/50 hover:text-primary motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-                            >
-                              <ExternalLink
-                                aria-hidden="true"
-                                className="size-4"
-                              />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                      <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
-                        {project.description}
-                      </p>
-                      {project.technologies.length > 0 && (
-                        <ul
-                          aria-label="Technologies used"
-                          className="responsive-list mt-5 flex flex-wrap gap-2"
-                        >
-                          {project.technologies.map((technology) => (
-                            <TechnologyBadge
-                              key={technology}
-                              technology={technology}
-                            />
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </article>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </Reveal>
+              <CarouselContent className="-ml-6">
+                {projects.map((project, index) => (
+                  <CarouselItem
+                    key={project.id}
+                    aria-label={`${index + 1} of ${projects.length}: ${project.title}`}
+                    className="basis-[90%] pl-6 md:basis-[70%] lg:basis-[60%]"
+                  >
+                    <ProjectCard project={project} enhanced />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </Reveal>
+        )}
       </div>
     </section>
   );
