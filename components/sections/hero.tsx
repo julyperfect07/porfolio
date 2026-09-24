@@ -56,17 +56,18 @@ export default function Hero() {
           >
             Contact me <ArrowUpRight aria-hidden="true" />
           </a>
-          <button
-            type="button"
-            disabled
-            title="Résumé will be available soon"
+          <a
+            href="/Abdallah_CV.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View résumé (PDF, opens in a new tab)"
             className={buttonVariants({
               variant: "outline",
-              className: "min-h-12 cursor-not-allowed gap-3 px-5 opacity-55",
+              className: "min-h-12 gap-3 px-5 duration-300 motion-safe:hover:-translate-y-1 motion-reduce:transition-none",
             })}
           >
-            Résumé soon <FileText aria-hidden="true" />
-          </button>
+            View résumé <FileText aria-hidden="true" />
+          </a>
         </div>
       </motion.div>
     </section>
